@@ -7,28 +7,25 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import scenes.GamePlay;
+
 public class GameMain extends Game {
 	private SpriteBatch batch;
-	private Texture image;
 
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
-		image = new Texture("Backgrounds/Game BG.png");
+		setScreen(new GamePlay(this));
 	}
 
 	@Override
 	public void render() {
-		Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(image, 0, 0);
-		batch.end();
+		super.render();
 	}
 
-	@Override
-	public void dispose() {
-		batch.dispose();
-		image.dispose();
+	public SpriteBatch getBatch(){
+		return this.batch;
 	}
+
+
 }
