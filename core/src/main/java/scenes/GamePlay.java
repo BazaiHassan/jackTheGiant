@@ -70,6 +70,7 @@ public class GamePlay implements Screen {
         game.getBatch().end();
 
         game.getBatch().setProjectionMatrix(mainCamera.combined);
+        mainCamera.update();
     }
 
     @Override
