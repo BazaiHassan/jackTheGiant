@@ -86,6 +86,8 @@ public class GamePlay implements Screen {
     void update(float dt) {
         moveCamera();
         checkBackgroundsOutOfBounds();
+        cloudsController.setCameraY(mainCamera.position.y);
+        cloudsController.createAndArrangeNewClouds();
     }
 
     private void checkBackgroundsOutOfBounds() {
