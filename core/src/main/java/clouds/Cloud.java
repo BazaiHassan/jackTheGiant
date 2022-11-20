@@ -27,7 +27,7 @@ public class Cloud extends Sprite {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
         bodyDef.position.set(
-                (getX()) / GameInfo.PPM,
+                (getX() - 40) / GameInfo.PPM,
                 (getY()) / GameInfo.PPM
         );
 
@@ -35,8 +35,8 @@ public class Cloud extends Sprite {
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(
-                (getWidth()/2)/GameInfo.PPM,
-                (getHeight()/2)/GameInfo.PPM
+                (getWidth() / 2 - 20) / GameInfo.PPM,
+                (getHeight() / 2) / GameInfo.PPM
         );
 
         FixtureDef fixtureDef = new FixtureDef();
@@ -46,12 +46,12 @@ public class Cloud extends Sprite {
         shape.dispose();
     }
 
-    public void setSpritePosition(float x, float y){
-        setPosition(x,y);
+    public void setSpritePosition(float x, float y) {
+        setPosition(x, y);
         createBody();
     }
 
-    public String getCloudName(){
+    public String getCloudName() {
         return this.cloudName;
     }
 

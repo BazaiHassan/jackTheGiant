@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.bazai.jackthegiant.GameMain;
 
 import clouds.Cloud;
+import clouds.CloudsController;
 import helper.GameInfo;
 
 public class GamePlay implements Screen {
@@ -29,6 +30,8 @@ public class GamePlay implements Screen {
     private Box2DDebugRenderer debugRenderer;
 
     private World world;
+
+    private CloudsController cloudsController;
 
 
     public GamePlay(GameMain game) {
@@ -59,6 +62,8 @@ public class GamePlay implements Screen {
                 GameInfo.HEIGHT/2f
         );
 
+        cloudsController =new CloudsController(world);
+
 
         createBackgrounds();
     } // Constructor
@@ -79,7 +84,7 @@ public class GamePlay implements Screen {
     }
 
     void update(float dt) {
-        //moveCamera();
+        moveCamera();
         checkBackgroundsOutOfBounds();
     }
 
@@ -95,7 +100,7 @@ public class GamePlay implements Screen {
     }
 
     void moveCamera() {
-        mainCamera.position.y -= 1;
+        mainCamera.position.y -= 1.5f;
     }
 
     @Override
@@ -113,6 +118,7 @@ public class GamePlay implements Screen {
 
         game.getBatch().begin();
         drawBackgrounds();
+        cloudsController.drawClouds(game.getBatch());
         game.getBatch().end();
 
         debugRenderer.render(world,box2DCamera.combined);
