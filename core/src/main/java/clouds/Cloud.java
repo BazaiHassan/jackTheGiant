@@ -35,7 +35,7 @@ public class Cloud extends Sprite {
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(
-                (getWidth() / 2 - 20) / GameInfo.PPM,
+                (getWidth() / 2f-20f) / GameInfo.PPM,
                 (getHeight() / 2) / GameInfo.PPM
         );
 

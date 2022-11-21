@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Array;
 import java.util.Random;
 
 import helper.GameInfo;
+import player.Player;
 
 public class CloudsController {
 
@@ -52,16 +53,16 @@ public class CloudsController {
         }
 
         float positionY = 0;
-        if (firstTimeArranging){
+        if (firstTimeArranging) {
             positionY = GameInfo.HEIGHT / 2f;
-        }else {
+        } else {
             positionY = lastCloudPositionY;
         }
         int controlX = 0;
 
         for (Cloud c : clouds) {
 
-            if (c.getX() == 0 && c.getY() == 0){
+            if (c.getX() == 0 && c.getY() == 0) {
                 float tempX = 0;
                 if (controlX == 0) {
                     tempX = randomBetweenNumbers(maxX - 40, maxX);
@@ -81,7 +82,7 @@ public class CloudsController {
         for (Cloud c : clouds) {
             batch.draw(
                     c,
-                    c.getX() - c.getWidth() / 2f,
+                    c.getX() - 20f - c.getWidth() / 2f,
                     c.getY() - c.getHeight() / 2f
             );
         }
@@ -105,6 +106,11 @@ public class CloudsController {
 
             positionClouds(false);
         }
+    }
+
+    public Player positionThePlayer(Player player) {
+        player = new Player(world, clouds.get(0).getX() + 0, clouds.get(0).getY() + 100);
+        return player;
     }
 
     public void setCameraY(float cameraY) {
