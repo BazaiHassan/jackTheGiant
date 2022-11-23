@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.bazai.jackthegiant.GameMain;
 
 import helper.GameInfo;
+import huds.MainMenuButtons;
 
 public class MainMenu implements Screen {
 
@@ -17,6 +18,7 @@ public class MainMenu implements Screen {
     private OrthographicCamera mainCamera;
     private Viewport gameViewport;
     private Texture bg;
+    private MainMenuButtons btns;
 
     public MainMenu(GameMain game){
         this.game = game;
@@ -24,6 +26,7 @@ public class MainMenu implements Screen {
         mainCamera.position.set(GameInfo.WIDTH/2f,GameInfo.HEIGHT/2f,0);
         gameViewport = new StretchViewport(GameInfo.WIDTH, GameInfo.HEIGHT, mainCamera);
         bg = new Texture("Backgrounds/Menu BG.png");
+        btns = new MainMenuButtons(game);
     }
 
     @Override
@@ -39,6 +42,9 @@ public class MainMenu implements Screen {
         game.getBatch().begin();
         game.getBatch().draw(bg,0,0);
         game.getBatch().end();
+
+        game.getBatch().setProjectionMatrix(btns.getStage().getCamera().combined);
+        btns.getStage().draw();
     }
 
     @Override
@@ -64,5 +70,6 @@ public class MainMenu implements Screen {
     @Override
     public void dispose() {
         bg.dispose();
+        btns.getStage().dispose();
     }
 }
