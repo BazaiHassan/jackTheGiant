@@ -67,8 +67,10 @@ public class CloudsController {
                 if (controlX == 0) {
                     tempX = randomBetweenNumbers(maxX - 40, maxX);
                     controlX = 1;
+                    c.setDrawLeft(false);
                 } else if (controlX == 1) {
                     tempX = randomBetweenNumbers(minX + 40, minX);
+                    c.setDrawLeft(true);
                 }
                 c.setSpritePosition(tempX, positionY);
                 positionY -= DISTANCE_BETWEEN_CLOUDS;
@@ -80,11 +82,19 @@ public class CloudsController {
 
     public void drawClouds(SpriteBatch batch) {
         for (Cloud c : clouds) {
-            batch.draw(
-                    c,
-                    c.getX() - 20f - c.getWidth() / 2f,
-                    c.getY() - c.getHeight() / 2f
-            );
+            if (c.getDrawLeft()){
+                batch.draw(
+                        c,
+                        c.getX() - 20f - c.getWidth() / 2f - 20f,
+                        c.getY() - c.getHeight() / 2f
+                );
+            }else {
+                batch.draw(
+                        c,
+                        c.getX() - 20f - c.getWidth() / 2f + 10f,
+                        c.getY() - c.getHeight() / 2f
+                );
+            }
         }
     }
 

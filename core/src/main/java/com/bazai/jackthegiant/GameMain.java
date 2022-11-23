@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import scenes.GamePlay;
+import scenes.MainMenu;
 
 public class GameMain extends Game {
 	private SpriteBatch batch;

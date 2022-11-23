@@ -1,6 +1,7 @@
 package scenes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -87,12 +88,24 @@ public class GamePlay implements Screen {
         }
     }
 
+    void handleInput(float dt){
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+            player.movePlayer(-2);
+        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+            player.movePlayer(+2);
+        }else {
+            player.setWalking(false);
+        }
+    }
+
     void update(float dt) {
-//        moveCamera();
+        handleInput(dt);
+        moveCamera();
         checkBackgroundsOutOfBounds();
         cloudsController.setCameraY(mainCamera.position.y);
         cloudsController.createAndArrangeNewClouds();
     }
+
 
     private void checkBackgroundsOutOfBounds() {
         for (int i = 0; i < bgs.length; i++) {
@@ -125,7 +138,8 @@ public class GamePlay implements Screen {
         game.getBatch().begin();
         drawBackgrounds();
         cloudsController.drawClouds(game.getBatch());
-        player.drawPlayer(game.getBatch());
+        player.drawPlayerIdle(game.getBatch());
+        player.drawPlayerAnimation(game.getBatch());
         game.getBatch().end();
 
         debugRenderer.render(world,box2DCamera.combined);
@@ -159,6 +173,11 @@ public class GamePlay implements Screen {
 
     @Override
     public void dispose() {
-
+        world.dispose();
+        for (int i = 0; i < bgs.length; i++) {
+            bgs[i].getTexture().dispose();
+        }
+        player.getTexture().dispose();
+        debugRenderer.dispose();
     }
 }
