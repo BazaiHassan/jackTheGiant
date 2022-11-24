@@ -17,6 +17,7 @@ import com.bazai.jackthegiant.GameMain;
 import clouds.Cloud;
 import clouds.CloudsController;
 import helper.GameInfo;
+import huds.UIHud;
 import player.Player;
 
 public class GamePlay implements Screen {
@@ -37,6 +38,8 @@ public class GamePlay implements Screen {
 
     private Player player;
 
+    private UIHud hud;
+
 
     public GamePlay(GameMain game) {
         this.game = game;
@@ -55,6 +58,9 @@ public class GamePlay implements Screen {
         box2DCamera.position.set(GameInfo.WIDTH/2f,GameInfo.HEIGHT/2f,0);
 
         debugRenderer = new Box2DDebugRenderer();
+
+        hud = new UIHud(game);
+
         world = new World(
                 new Vector2(0,-9.8f),
                 true
@@ -147,13 +153,16 @@ public class GamePlay implements Screen {
         game.getBatch().setProjectionMatrix(mainCamera.combined);
         mainCamera.update();
 
+        game.getBatch().setProjectionMatrix(hud.getStage().getCamera().combined);
+        hud.getStage().draw();
+
         player.updatePlayer();
         world.step(Gdx.graphics.getDeltaTime(),6,2);
     }
 
     @Override
     public void resize(int width, int height) {
-
+        gameViewport.update(width, height);
     }
 
     @Override

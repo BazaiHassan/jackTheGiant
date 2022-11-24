@@ -1,10 +1,13 @@
 package huds;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -12,6 +15,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.bazai.jackthegiant.GameMain;
 
 import helper.GameInfo;
+import scenes.GamePlay;
+import scenes.Highscore;
+import scenes.Options;
 
 public class MainMenuButtons {
 
@@ -29,7 +35,15 @@ public class MainMenuButtons {
         );
 
         stage = new Stage(gameViewport, game.getBatch());
+
+        Gdx.input.setInputProcessor(stage);
+
         createAndPositionBtn();
+        addAllListeners();
+        stageActor(stage);
+    }
+
+    private void stageActor(Stage stage) {
         stage.addActor(playBtn);
         stage.addActor(highScoreBtn);
         stage.addActor(optionsBtn);
@@ -85,8 +99,44 @@ public class MainMenuButtons {
         quitBtn.setPosition(GameInfo.WIDTH / 2f - 20, GameInfo.HEIGHT / 2f - 160, Align.center);
         musicBtn.setPosition(GameInfo.WIDTH  - 13, 13, Align.bottomRight);
 
+    } // createAndPositionBtn method
 
-    }
+    void addAllListeners(){
+        playBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setScreen(new GamePlay(game));
+            }
+        });
+
+        highScoreBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setScreen(new Highscore(game));
+            }
+        });
+
+        optionsBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setScreen(new Options(game));
+            }
+        });
+
+        quitBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+
+            }
+        });
+
+        musicBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+
+            }
+        });
+    } // addAllListeners method
 
     public Stage getStage() {
         return stage;
