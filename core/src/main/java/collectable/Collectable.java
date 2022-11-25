@@ -27,10 +27,10 @@ public class Collectable extends Sprite {
     void createCollectableBody() {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set((getX() + getWidth() / 2) / GameInfo.PPM, (getY() + getWidth() / 2) / GameInfo.PPM);
+        bodyDef.position.set((getX() + getWidth() / 2 - 20) / GameInfo.PPM, (getY() + getWidth() / 2) / GameInfo.PPM);
         body = world.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox((getWidth()/2)/GameInfo.PPM, (getHeight()/2)/GameInfo.PPM);
+        shape.setAsBox((getWidth() / 2) / GameInfo.PPM, (getHeight() / 2) / GameInfo.PPM);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
@@ -40,6 +40,11 @@ public class Collectable extends Sprite {
 
     public void setCollectablePosition(float x, float y) {
         setPosition(x, y);
+        createCollectableBody();
+    }
+
+    public void updateCollectable() {
+        setPosition((body.getPosition().x-0.05f) * GameInfo.PPM, (body.getPosition().y - 0.2f) * GameInfo.PPM);
     }
 
 

@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Array;
 
 import java.util.Random;
 
+import collectable.Collectable;
 import helper.GameInfo;
 import player.Player;
 
@@ -14,11 +15,13 @@ public class CloudsController {
 
     private World world;
     private Array<Cloud> clouds = new Array<Cloud>();
+    private Array<Collectable> collectables = new Array<Collectable>();
     private final float DISTANCE_BETWEEN_CLOUDS = 250f;
     private float minX, maxX;
     private float lastCloudPositionY;
     private Random random = new Random();
     private float cameraY;
+
 
     public CloudsController(World world) {
         this.world = world;
@@ -82,13 +85,13 @@ public class CloudsController {
 
     public void drawClouds(SpriteBatch batch) {
         for (Cloud c : clouds) {
-            if (c.getDrawLeft()){
+            if (c.getDrawLeft()) {
                 batch.draw(
                         c,
                         c.getX() - 20f - c.getWidth() / 2f - 20f,
                         c.getY() - c.getHeight() / 2f
                 );
-            }else {
+            } else {
                 batch.draw(
                         c,
                         c.getX() - 20f - c.getWidth() / 2f + 10f,
@@ -96,10 +99,22 @@ public class CloudsController {
                 );
             }
         }
+
+        // TODO ---> Remove this later, it's just a test
+        Collectable c1 = new Collectable(world, "Coin");
+        c1.setCollectablePosition(clouds.get(1).getWidth()/2, clouds.get(1).getY() + 20);
+        collectables.add(c1);
     }
 
     private float randomBetweenNumbers(float min, float max) {
         return random.nextFloat() * (max - min) + min;
+    }
+
+    public void drawCollectables(SpriteBatch batch) {
+        for (Collectable c : collectables) {
+            c.updateCollectable();
+            batch.draw(c, c.getX(), c.getY());
+        }
     }
 
     public void createAndArrangeNewClouds() {
