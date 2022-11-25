@@ -75,15 +75,23 @@ public class Player extends Sprite {
 
             animation = new Animation<>(1f / 10f, playerAtlas.getRegions());
 
-            batch.draw(animation.getKeyFrame(elapsedTime,true),
+            batch.draw(animation.getKeyFrame(elapsedTime, true),
                     getX() + getWidth() / 2f - 5f,
                     getY() - getHeight() / 2f);
         }
     }
 
     public void updatePlayer() {
-        setPosition(body.getPosition().x * GameInfo.PPM, body.getPosition().y * GameInfo.PPM);
+        if (body.getLinearVelocity().x > 0) {
+            // Player is going right
+            setPosition(body.getPosition().x * GameInfo.PPM, body.getPosition().y * GameInfo.PPM);
 
+        } else if (body.getLinearVelocity().x < 0) {
+            // Player is going right
+
+            setPosition((body.getPosition().x - 0.3f) * GameInfo.PPM, body.getPosition().y * GameInfo.PPM);
+
+        }
     }
 
     public void movePlayer(float x) {
