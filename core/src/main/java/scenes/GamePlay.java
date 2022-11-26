@@ -112,7 +112,7 @@ public class GamePlay implements Screen, ContactListener {
 
     void update(float dt) {
         handleInput(dt);
-        moveCamera();
+        //moveCamera();
         checkBackgroundsOutOfBounds();
         cloudsController.setCameraY(mainCamera.position.y);
         cloudsController.createAndArrangeNewClouds();
@@ -212,11 +212,15 @@ public class GamePlay implements Screen, ContactListener {
 
         if (body1.getUserData() == "Player" && body2.getUserData()=="Coin"){
             // Player collided with coin
-            System.out.println("Collided with coins");
+            body2.setUserData("Remove");
+            cloudsController.removeCollectables();
         }
 
         if (body1.getUserData() == "Player" && body2.getUserData()=="Life"){
             // Player collided with life
+            body2.setUserData("Remove");
+            cloudsController.removeCollectables();
+
         }
     }
 
