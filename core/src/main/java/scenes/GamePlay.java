@@ -22,6 +22,7 @@ import com.bazai.jackthegiant.GameMain;
 import clouds.Cloud;
 import clouds.CloudsController;
 import helper.GameInfo;
+import helper.GameManager;
 import huds.UIHud;
 import player.Player;
 
@@ -30,6 +31,7 @@ public class GamePlay implements Screen, ContactListener {
     private GameMain game;
     private Sprite[] bgs;
     private float lastYPosition;
+    private boolean touchedForFirstTime;
 
     private OrthographicCamera mainCamera;
     private Viewport gameViewport;
@@ -111,12 +113,25 @@ public class GamePlay implements Screen, ContactListener {
     }
 
     void update(float dt) {
-        handleInput(dt);
-        moveCamera();
-        checkBackgroundsOutOfBounds();
-        cloudsController.setCameraY(mainCamera.position.y);
-        cloudsController.createAndArrangeNewClouds();
-        cloudsController.removeOffScreenCollectables();
+        checkForFirstTouch();
+        if (!GameManager.getInstance().isPaused){
+            handleInput(dt);
+            moveCamera();
+            checkBackgroundsOutOfBounds();
+            cloudsController.setCameraY(mainCamera.position.y);
+            cloudsController.createAndArrangeNewClouds();
+            cloudsController.removeOffScreenCollectables();
+        }
+
+    }
+
+    private void checkForFirstTouch() {
+        if (!touchedForFirstTime){
+            if (Gdx.input.justTouched()){
+                touchedForFirstTime = true;
+                GameManager.getInstance().isPaused = false;
+            }
+        }
     }
 
 
@@ -214,13 +229,15 @@ public class GamePlay implements Screen, ContactListener {
 
         if (body1.getUserData() == "Player" && body2.getUserData()=="Coin"){
             // Player collided with coin
-            System.out.println("Coin");
+            hud.incrementCoins();
             body2.setUserData("Remove");
             cloudsController.removeCollectables();
+
         }
 
         if (body1.getUserData() == "Player" && body2.getUserData()=="Life"){
             // Player collided with life
+            hud.incrementLives();
             body2.setUserData("Remove");
             cloudsController.removeCollectables();
 
