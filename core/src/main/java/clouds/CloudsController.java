@@ -78,9 +78,29 @@ public class CloudsController {
                 c.setSpritePosition(tempX, positionY);
                 positionY -= DISTANCE_BETWEEN_CLOUDS;
                 lastCloudPositionY = positionY;
+
+                if (!firstTimeArranging && c.getCloudName() != "Dark Cloud") {
+                    int rand = random.nextInt(10);
+                    if (rand > 1) {
+                        int randomCollectable = random.nextInt(2);
+                        if (randomCollectable == 0) {
+                            // Spawn a Life if the life count is lower than two
+                            Collectable collectable = new Collectable(world, "Life");
+                            collectable.setCollectablePosition(c.getX(), c.getY() + 20);
+                            collectables.add(collectable);
+                        } else {
+                            // Spawn a Coin
+                            Collectable collectable = new Collectable(world, "Coin");
+                            collectable.setCollectablePosition(c.getX(), c.getY() + 20);
+                            collectables.add(collectable);
+                        }
+                    }
+                }
             }
 
         }
+
+
     }
 
     public void drawClouds(SpriteBatch batch) {
@@ -100,10 +120,6 @@ public class CloudsController {
             }
         }
 
-        // TODO ---> Remove this later, it's just a test
-        Collectable c1 = new Collectable(world, "Coin");
-        c1.setCollectablePosition(clouds.get(1).getWidth()/2, clouds.get(1).getY() + 20);
-        collectables.add(c1);
     }
 
     private float randomBetweenNumbers(float min, float max) {
@@ -117,12 +133,22 @@ public class CloudsController {
         }
     }
 
-    public void removeCollectables(){
+    public void removeCollectables() {
         for (int i = 0; i < collectables.size; i++) {
-            if (collectables.get(i).getFixture().getUserData()=="Remove"){
+            if (collectables.get(i).getFixture().getUserData() == "Remove") {
                 collectables.get(i).changeFilter();
                 collectables.get(i).getTexture().dispose();
                 collectables.removeIndex(i);
+            }
+        }
+    }
+
+    public void removeOffScreenCollectables(){
+        for (int i = 0; i < collectables.size; i++) {
+            if ((collectables.get(i).getY() - GameInfo.HEIGHT/2f - 15)>cameraY){
+                collectables.get(i).getTexture().dispose();
+                collectables.removeIndex(i);
+                System.out.println("Collectable out");
             }
         }
     }
@@ -147,6 +173,7 @@ public class CloudsController {
         player = new Player(world, clouds.get(0).getX() - 60, clouds.get(0).getY() + 78);
         return player;
     }
+
 
     public void setCameraY(float cameraY) {
         this.cameraY = cameraY;

@@ -112,10 +112,11 @@ public class GamePlay implements Screen, ContactListener {
 
     void update(float dt) {
         handleInput(dt);
-        //moveCamera();
+        moveCamera();
         checkBackgroundsOutOfBounds();
         cloudsController.setCameraY(mainCamera.position.y);
         cloudsController.createAndArrangeNewClouds();
+        cloudsController.removeOffScreenCollectables();
     }
 
 
@@ -159,11 +160,12 @@ public class GamePlay implements Screen, ContactListener {
 
         debugRenderer.render(world,box2DCamera.combined);
 
-        game.getBatch().setProjectionMatrix(mainCamera.combined);
-        mainCamera.update();
-
         game.getBatch().setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.getStage().draw();
+
+        // it is important to be under hud drawing
+        game.getBatch().setProjectionMatrix(mainCamera.combined);
+        mainCamera.update();
 
         player.updatePlayer();
         world.step(Gdx.graphics.getDeltaTime(),6,2);
@@ -212,6 +214,7 @@ public class GamePlay implements Screen, ContactListener {
 
         if (body1.getUserData() == "Player" && body2.getUserData()=="Coin"){
             // Player collided with coin
+            System.out.println("Coin");
             body2.setUserData("Remove");
             cloudsController.removeCollectables();
         }
