@@ -160,28 +160,46 @@ public class UIHud {
         quitBtn.remove();
     }
 
+    public void createGameOverPanel() {
+        Image gameOverPanel = new Image(new Texture("Buttons/Pause/Show Score.png"));
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Fonts/blow.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 70;
+        BitmapFont font = generator.generateFont(parameter);
+        Label endScore = new Label(String.valueOf(GameManager.getInstance().score), new Label.LabelStyle(font, Color.WHITE));
+        Label endCoinScore = new Label(String.valueOf(GameManager.getInstance().coinScore), new Label.LabelStyle(font, Color.WHITE));
+
+        gameOverPanel.setPosition(GameInfo.WIDTH / 2f, GameInfo.HEIGHT / 2f, Align.center);
+        endScore.setPosition(GameInfo.WIDTH / 2f - 30, GameInfo.HEIGHT / 2f + 20, Align.center);
+        endCoinScore.setPosition(GameInfo.WIDTH / 2f - 30, GameInfo.HEIGHT / 2f - 90, Align.center);
+
+        stage.addActor(gameOverPanel);
+        stage.addActor(endScore);
+        stage.addActor(endCoinScore);
+
+    }
 
     public void incrementScore(int score) {
         GameManager.getInstance().score += score;
         scoreLabel.setText(String.valueOf(GameManager.getInstance().score));
     }
 
-    public void incrementCoins(){
+    public void incrementCoins() {
         GameManager.getInstance().coinScore++;
         coinLabel.setText(GameManager.getInstance().coinScore);
         incrementScore(200);
     }
 
-    public void incrementLives(){
+    public void incrementLives() {
         GameManager.getInstance().lifeScore++;
         lifeLabel.setText(GameManager.getInstance().lifeScore);
         incrementScore(200);
     }
 
-    public void decrementLife(){
+    public void decrementLife() {
         GameManager.getInstance().lifeScore--;
-        if (GameManager.getInstance().lifeScore >=0){
-            lifeLabel.setText("x"+GameManager.getInstance().lifeScore);
+        if (GameManager.getInstance().lifeScore >= 0) {
+            lifeLabel.setText("x" + GameManager.getInstance().lifeScore);
         }
     }
 

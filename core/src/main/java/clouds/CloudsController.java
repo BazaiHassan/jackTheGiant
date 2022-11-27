@@ -9,6 +9,7 @@ import java.util.Random;
 
 import collectable.Collectable;
 import helper.GameInfo;
+import helper.GameManager;
 import player.Player;
 
 public class CloudsController {
@@ -81,13 +82,21 @@ public class CloudsController {
 
                 if (!firstTimeArranging && c.getCloudName() != "Dark Cloud") {
                     int rand = random.nextInt(10);
-                    if (rand > 1) {
+                    if (rand > 5) {
                         int randomCollectable = random.nextInt(2);
                         if (randomCollectable == 0) {
                             // Spawn a Life if the life count is lower than two
-                            Collectable collectable = new Collectable(world, "Life");
-                            collectable.setCollectablePosition(c.getX(), c.getY() + 20);
-                            collectables.add(collectable);
+                            if (GameManager.getInstance().lifeScore < 2) {
+                                Collectable collectable = new Collectable(world, "Life");
+                                collectable.setCollectablePosition(c.getX(), c.getY() + 20);
+                                collectables.add(collectable);
+                            } else {
+                                // Spawn a Coin
+                                Collectable collectable = new Collectable(world, "Coin");
+                                collectable.setCollectablePosition(c.getX(), c.getY() + 20);
+                                collectables.add(collectable);
+                            }
+
                         } else {
                             // Spawn a Coin
                             Collectable collectable = new Collectable(world, "Coin");
@@ -143,9 +152,9 @@ public class CloudsController {
         }
     }
 
-    public void removeOffScreenCollectables(){
+    public void removeOffScreenCollectables() {
         for (int i = 0; i < collectables.size; i++) {
-            if ((collectables.get(i).getY() - GameInfo.HEIGHT/2f - 15)>cameraY){
+            if ((collectables.get(i).getY() - GameInfo.HEIGHT / 2f - 15) > cameraY) {
                 collectables.get(i).getTexture().dispose();
                 collectables.removeIndex(i);
                 System.out.println("Collectable out");

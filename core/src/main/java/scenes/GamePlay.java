@@ -201,6 +201,8 @@ public class GamePlay implements Screen, ContactListener {
 
             // check if we have a new score
 
+            // show the end score to the user
+            hud.createGameOverPanel();
             // load main menu
             RunnableAction run = new RunnableAction();
             run.setRunnable(new Runnable() {
