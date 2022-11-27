@@ -161,7 +161,7 @@ public class UIHud {
     }
 
     public void incrementScore(int score) {
-        GameManager.getInstance().score = score;
+        GameManager.getInstance().score += score;
         scoreLabel.setText(String.valueOf(GameManager.getInstance().score));
     }
 

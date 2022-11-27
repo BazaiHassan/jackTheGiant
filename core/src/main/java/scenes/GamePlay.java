@@ -44,6 +44,7 @@ public class GamePlay implements Screen, ContactListener {
     private CloudsController cloudsController;
 
     private Player player;
+    private float lastPlayerY;
 
     private UIHud hud;
 
@@ -58,29 +59,29 @@ public class GamePlay implements Screen, ContactListener {
         box2DCamera = new OrthographicCamera();
         box2DCamera.setToOrtho(
                 false,
-                GameInfo.WIDTH/GameInfo.PPM,
-                GameInfo.HEIGHT/GameInfo.PPM
+                GameInfo.WIDTH / GameInfo.PPM,
+                GameInfo.HEIGHT / GameInfo.PPM
         );
 
-        box2DCamera.position.set(GameInfo.WIDTH/2f,GameInfo.HEIGHT/2f,0);
+        box2DCamera.position.set(GameInfo.WIDTH / 2f, GameInfo.HEIGHT / 2f, 0);
 
         debugRenderer = new Box2DDebugRenderer();
 
         hud = new UIHud(game);
 
         world = new World(
-                new Vector2(0,-9.8f),
+                new Vector2(0, -9.8f),
                 true
         );
         world.setContactListener(this);
 
-        Cloud c = new Cloud(world,"Cloud 1");
+        Cloud c = new Cloud(world, "Cloud 1");
         c.setSpritePosition(
-                GameInfo.WIDTH/2f,
-                GameInfo.HEIGHT/2f
+                GameInfo.WIDTH / 2f,
+                GameInfo.HEIGHT / 2f
         );
 
-        cloudsController =new CloudsController(world);
+        cloudsController = new CloudsController(world);
         player = cloudsController.positionThePlayer(player);
 
 
@@ -102,34 +103,37 @@ public class GamePlay implements Screen, ContactListener {
         }
     }
 
-    void handleInput(float dt){
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+    void handleInput(float dt) {
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             player.movePlayer(-2);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             player.movePlayer(+2);
-        }else {
+        } else {
             player.setWalking(false);
         }
     }
 
     void update(float dt) {
         checkForFirstTouch();
-        if (!GameManager.getInstance().isPaused){
+        if (!GameManager.getInstance().isPaused) {
             handleInput(dt);
             moveCamera();
             checkBackgroundsOutOfBounds();
             cloudsController.setCameraY(mainCamera.position.y);
             cloudsController.createAndArrangeNewClouds();
             cloudsController.removeOffScreenCollectables();
+            checkPlayerBounds();
+            countScore();
         }
 
     }
 
     private void checkForFirstTouch() {
-        if (!touchedForFirstTime){
-            if (Gdx.input.justTouched()){
+        if (!touchedForFirstTime) {
+            if (Gdx.input.justTouched()) {
                 touchedForFirstTime = true;
                 GameManager.getInstance().isPaused = false;
+                lastPlayerY = player.getY();
             }
         }
     }
@@ -137,7 +141,7 @@ public class GamePlay implements Screen, ContactListener {
 
     private void checkBackgroundsOutOfBounds() {
         for (int i = 0; i < bgs.length; i++) {
-            if ((bgs[i].getY() - bgs[i].getHeight()/2f - 5) > mainCamera.position.y) {
+            if ((bgs[i].getY() - bgs[i].getHeight() / 2f - 5) > mainCamera.position.y) {
                 float newPosition = bgs[i].getHeight() + lastYPosition;
                 bgs[i].setPosition(0, -newPosition);
                 lastYPosition = Math.abs(newPosition);
@@ -146,8 +150,35 @@ public class GamePlay implements Screen, ContactListener {
         }
     }
 
+    void checkPlayerBounds() {
+        if (player.getY() - GameInfo.HEIGHT / 2f - player.getHeight() / 2f > mainCamera.position.y) {
+            GameManager.getInstance().isPaused = true;
+            System.out.println("Player is out from top");
+        }
+
+        if (player.getY() + GameInfo.HEIGHT / 2f + player.getHeight() / 2f < mainCamera.position.y) {
+            GameManager.getInstance().isPaused = true;
+            System.out.println("Player is out from down");
+        }
+
+        if (player.getX() - 25 > GameInfo.WIDTH) {
+            GameManager.getInstance().isPaused = true;
+            System.out.println("Player is out from right");
+        } else if (player.getX() + 25 < 0) {
+            GameManager.getInstance().isPaused = true;
+            System.out.println("Player is out from left");
+        }
+    }
+
     void moveCamera() {
         mainCamera.position.y -= 1.5f;
+    }
+
+    void countScore(){
+        if (lastPlayerY > player.getY()){
+            hud.incrementScore(1);
+            lastPlayerY = player.getY();
+        }
     }
 
     @Override
@@ -173,7 +204,7 @@ public class GamePlay implements Screen, ContactListener {
         player.drawPlayerAnimation(game.getBatch());
         game.getBatch().end();
 
-        debugRenderer.render(world,box2DCamera.combined);
+        //debugRenderer.render(world,box2DCamera.combined);
 
         game.getBatch().setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.getStage().draw();
@@ -183,7 +214,7 @@ public class GamePlay implements Screen, ContactListener {
         mainCamera.update();
 
         player.updatePlayer();
-        world.step(Gdx.graphics.getDeltaTime(),6,2);
+        world.step(Gdx.graphics.getDeltaTime(), 6, 2);
     }
 
     @Override
@@ -219,15 +250,15 @@ public class GamePlay implements Screen, ContactListener {
     @Override
     public void beginContact(Contact contact) {
         Fixture body1, body2;
-        if (contact.getFixtureA().getUserData() == "Player"){
+        if (contact.getFixtureA().getUserData() == "Player") {
             body1 = contact.getFixtureA();
             body2 = contact.getFixtureB();
-        }else {
+        } else {
             body1 = contact.getFixtureB();
             body2 = contact.getFixtureA();
         }
 
-        if (body1.getUserData() == "Player" && body2.getUserData()=="Coin"){
+        if (body1.getUserData() == "Player" && body2.getUserData() == "Coin") {
             // Player collided with coin
             hud.incrementCoins();
             body2.setUserData("Remove");
@@ -235,7 +266,7 @@ public class GamePlay implements Screen, ContactListener {
 
         }
 
-        if (body1.getUserData() == "Player" && body2.getUserData()=="Life"){
+        if (body1.getUserData() == "Player" && body2.getUserData() == "Life") {
             // Player collided with life
             hud.incrementLives();
             body2.setUserData("Remove");
