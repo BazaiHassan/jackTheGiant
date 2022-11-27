@@ -160,6 +160,7 @@ public class UIHud {
         quitBtn.remove();
     }
 
+
     public void incrementScore(int score) {
         GameManager.getInstance().score += score;
         scoreLabel.setText(String.valueOf(GameManager.getInstance().score));
@@ -175,6 +176,13 @@ public class UIHud {
         GameManager.getInstance().lifeScore++;
         lifeLabel.setText(GameManager.getInstance().lifeScore);
         incrementScore(200);
+    }
+
+    public void decrementLife(){
+        GameManager.getInstance().lifeScore--;
+        if (GameManager.getInstance().lifeScore >=0){
+            lifeLabel.setText("x"+GameManager.getInstance().lifeScore);
+        }
     }
 
     public Stage getStage() {

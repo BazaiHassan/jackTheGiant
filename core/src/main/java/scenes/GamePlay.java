@@ -15,6 +15,10 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.bazai.jackthegiant.GameMain;
@@ -152,21 +156,25 @@ public class GamePlay implements Screen, ContactListener {
 
     void checkPlayerBounds() {
         if (player.getY() - GameInfo.HEIGHT / 2f - player.getHeight() / 2f > mainCamera.position.y) {
-            GameManager.getInstance().isPaused = true;
-            System.out.println("Player is out from top");
+            if (!player.isDead()){
+                playerDied();
+            }
         }
 
         if (player.getY() + GameInfo.HEIGHT / 2f + player.getHeight() / 2f < mainCamera.position.y) {
-            GameManager.getInstance().isPaused = true;
-            System.out.println("Player is out from down");
+            if (!player.isDead()){
+                playerDied();
+            }
         }
 
         if (player.getX() - 25 > GameInfo.WIDTH) {
-            GameManager.getInstance().isPaused = true;
-            System.out.println("Player is out from right");
+            if (!player.isDead()){
+                playerDied();
+            }
         } else if (player.getX() + 25 < 0) {
-            GameManager.getInstance().isPaused = true;
-            System.out.println("Player is out from left");
+            if (!player.isDead()){
+                playerDied();
+            }
         }
     }
 
@@ -181,6 +189,54 @@ public class GamePlay implements Screen, ContactListener {
         }
     }
 
+    void playerDied(){
+        GameManager.getInstance().isPaused = true;
+        //decrement life count
+        hud.decrementLife();
+        player.setDead(true);
+        player.setPosition(1000,1000);
+
+        if (GameManager.getInstance().lifeScore < 0){
+            // Player has no more life left to continue the game
+
+            // check if we have a new score
+
+            // load main menu
+            RunnableAction run = new RunnableAction();
+            run.setRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    game.setScreen(new MainMenu(game));
+                }
+            });
+
+            SequenceAction sa = new SequenceAction();
+            sa.addAction(Actions.delay(3f));
+            sa.addAction(Actions.fadeOut(1f));
+            sa.addAction(run);
+
+            hud.getStage().addAction(sa);
+
+        }else {
+            // Load the game play
+            RunnableAction run = new RunnableAction();
+            run.setRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    game.setScreen(new GamePlay(game));
+                }
+            });
+
+            SequenceAction sa = new SequenceAction();
+            sa.addAction(Actions.delay(2f));
+            sa.addAction(Actions.fadeOut(1f));
+            sa.addAction(run);
+
+            hud.getStage().addAction(sa);
+
+        }
+    }
+
     @Override
     public void show() {
 
@@ -191,7 +247,7 @@ public class GamePlay implements Screen, ContactListener {
 
         update(delta);
 
-        Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);
+        Gdx.gl.glClearColor(0, 0, 0, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         game.getBatch().begin();
@@ -204,10 +260,11 @@ public class GamePlay implements Screen, ContactListener {
         player.drawPlayerAnimation(game.getBatch());
         game.getBatch().end();
 
-        //debugRenderer.render(world,box2DCamera.combined);
+        debugRenderer.render(world,box2DCamera.combined);
 
         game.getBatch().setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.getStage().draw();
+        hud.getStage().act();
 
         // it is important to be under hud drawing
         game.getBatch().setProjectionMatrix(mainCamera.combined);
@@ -272,6 +329,12 @@ public class GamePlay implements Screen, ContactListener {
             body2.setUserData("Remove");
             cloudsController.removeCollectables();
 
+        }
+
+        if (body1.getUserData() == "Player" && body2.getUserData() == "Dark Cloud") {
+            if (!player.isDead()){
+                playerDied();
+            }
         }
     }
 
