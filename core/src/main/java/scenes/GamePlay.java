@@ -35,6 +35,11 @@ public class GamePlay implements Screen, ContactListener {
     private GameMain game;
     private Sprite[] bgs;
     private float lastYPosition;
+
+    private float cameraSpeed = 10f;
+    private float maxSpeed = 10f;
+    private float acceleration = 10f;
+
     private boolean touchedForFirstTime;
 
     private OrthographicCamera mainCamera;
@@ -90,6 +95,7 @@ public class GamePlay implements Screen, ContactListener {
 
 
         createBackgrounds();
+        setCameraSpeed();
     } // Constructor
 
     void createBackgrounds() {
@@ -121,7 +127,7 @@ public class GamePlay implements Screen, ContactListener {
         checkForFirstTouch();
         if (!GameManager.getInstance().isPaused) {
             handleInput(dt);
-            moveCamera();
+            moveCamera(dt);
             checkBackgroundsOutOfBounds();
             cloudsController.setCameraY(mainCamera.position.y);
             cloudsController.createAndArrangeNewClouds();
@@ -178,8 +184,27 @@ public class GamePlay implements Screen, ContactListener {
         }
     }
 
-    void moveCamera() {
-        mainCamera.position.y -= 1.5f;
+    void moveCamera(float delta) {
+        mainCamera.position.y -= cameraSpeed * delta;
+        cameraSpeed += acceleration * delta;
+        if (cameraSpeed > maxSpeed){
+            cameraSpeed = maxSpeed;
+        }
+    }
+
+    void setCameraSpeed(){
+        if (GameManager.getInstance().gameData.isEasyDifficulty()){
+            cameraSpeed = 80;
+            maxSpeed = 100;
+        }
+        if (GameManager.getInstance().gameData.isMediumDifficulty()){
+            cameraSpeed = 100;
+            maxSpeed = 120;
+        }
+        if (GameManager.getInstance().gameData.isHardDifficulty()){
+            cameraSpeed = 120;
+            maxSpeed = 140;
+        }
     }
 
     void countScore(){
@@ -200,7 +225,7 @@ public class GamePlay implements Screen, ContactListener {
             // Player has no more life left to continue the game
 
             // check if we have a new score
-
+            GameManager.getInstance().checkForNewHighscore();
             // show the end score to the user
             hud.createGameOverPanel();
             // load main menu

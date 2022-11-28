@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.bazai.jackthegiant.GameMain;
 
 import helper.GameInfo;
+import helper.GameManager;
 import scenes.MainMenu;
 
 public class OptionsButtons {
@@ -62,12 +63,10 @@ public class OptionsButtons {
         medium.setPosition(GameInfo.WIDTH / 2f, GameInfo.HEIGHT / 2f - 40, Align.center);
         hard.setPosition(GameInfo.WIDTH / 2f, GameInfo.HEIGHT / 2f - 120, Align.center);
 
-        // Remove this later
-        sign.setPosition(medium.getX()+medium.getWidth()-50, medium.getY()+13, Align.bottomLeft);
-
+        positionTheSign();
     }
 
-    void addListeners(){
+    void addListeners() {
         backBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -78,23 +77,64 @@ public class OptionsButtons {
         easy.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                sign.setY(easy.getY()+13);
+                changeDifficulty(0);
+                sign.setY(easy.getY() + 13);
             }
         });
 
         medium.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                sign.setY(medium.getY()+13);
+                changeDifficulty(1);
+                sign.setY(medium.getY() + 13);
             }
         });
 
         hard.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                sign.setY(hard.getY()+13);
+                changeDifficulty(2);
+                sign.setY(hard.getY() + 13);
             }
         });
+    }
+
+    void positionTheSign() {
+        if (GameManager.getInstance().gameData.isEasyDifficulty()) {
+            sign.setPosition(easy.getX() + easy.getWidth() - 50, easy.getY() + 13, Align.bottomLeft);
+        }
+
+        if (GameManager.getInstance().gameData.isMediumDifficulty()) {
+            sign.setPosition(medium.getX() + medium.getWidth() - 50, medium.getY() + 13, Align.bottomLeft);
+        }
+
+        if (GameManager.getInstance().gameData.isHardDifficulty()) {
+            sign.setPosition(hard.getX() + hard.getWidth() - 50, hard.getY() + 13, Align.bottomLeft);
+        }
+    }
+
+    void changeDifficulty(int difficulty){
+
+        switch (difficulty){
+            case 0:
+                GameManager.getInstance().gameData.setEasyDifficulty(true);
+                GameManager.getInstance().gameData.setMediumDifficulty(false);
+                GameManager.getInstance().gameData.setHardDifficulty(false);
+                break;
+            case 1:
+                GameManager.getInstance().gameData.setEasyDifficulty(false);
+                GameManager.getInstance().gameData.setMediumDifficulty(true);
+                GameManager.getInstance().gameData.setHardDifficulty(false);
+                break;
+            case 2:
+                GameManager.getInstance().gameData.setEasyDifficulty(false);
+                GameManager.getInstance().gameData.setMediumDifficulty(false);
+                GameManager.getInstance().gameData.setHardDifficulty(true);
+                break;
+        }
+
+        GameManager.getInstance().saveData();
+
     }
 
     public Stage getStage() {
