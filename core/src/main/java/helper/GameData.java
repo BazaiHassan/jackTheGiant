@@ -8,7 +8,7 @@ public class GameData {
     private boolean mediumDifficulty;
     private boolean hardDifficulty;
 
-    private boolean musicOn;
+    private boolean musicOn = true;
 
     public int getHighScore() {
         return highScore;

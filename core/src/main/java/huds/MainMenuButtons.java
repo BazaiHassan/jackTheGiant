@@ -45,6 +45,7 @@ public class MainMenuButtons {
         createAndPositionBtn();
         addAllListeners();
         stageActor(stage);
+        checkMusic();
     }
 
     private void stageActor(Stage stage) {
@@ -150,10 +151,24 @@ public class MainMenuButtons {
         musicBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                if (GameManager.getInstance().gameData.isMusicOn()){
+                    GameManager.getInstance().gameData.setMusicOn(false);
+                    GameManager.getInstance().stopMusic();
+                }else {
+                    GameManager.getInstance().gameData.setMusicOn(true);
+                    GameManager.getInstance().playMusic();
+                }
 
+                GameManager.getInstance().saveData();
             }
         });
     } // addAllListeners method
+
+    void checkMusic(){
+        if (GameManager.getInstance().gameData.isMusicOn()){
+            GameManager.getInstance().playMusic();
+        }
+    }
 
     public Stage getStage() {
         return stage;

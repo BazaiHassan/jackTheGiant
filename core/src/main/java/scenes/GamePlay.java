@@ -3,6 +3,7 @@ package scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -57,6 +58,7 @@ public class GamePlay implements Screen, ContactListener {
 
     private UIHud hud;
 
+    private Sound coinSound, lifeSound, clickSound;
 
     public GamePlay(GameMain game) {
         this.game = game;
@@ -96,6 +98,10 @@ public class GamePlay implements Screen, ContactListener {
 
         createBackgrounds();
         setCameraSpeed();
+
+        coinSound = Gdx.audio.newSound(Gdx.files.internal("Sounds/Coin Sound.wav"));
+        lifeSound = Gdx.audio.newSound(Gdx.files.internal("Sounds/Life Sound.wav"));
+        clickSound = Gdx.audio.newSound(Gdx.files.internal("Sounds/Click Sound.wav"));
     } // Constructor
 
     void createBackgrounds() {
@@ -329,6 +335,8 @@ public class GamePlay implements Screen, ContactListener {
         }
         player.getTexture().dispose();
         debugRenderer.dispose();
+        coinSound.dispose();
+        lifeSound.dispose();
     }
 
     @Override
@@ -345,6 +353,7 @@ public class GamePlay implements Screen, ContactListener {
         if (body1.getUserData() == "Player" && body2.getUserData() == "Coin") {
             // Player collided with coin
             hud.incrementCoins();
+            coinSound.play();
             body2.setUserData("Remove");
             cloudsController.removeCollectables();
 
@@ -353,6 +362,7 @@ public class GamePlay implements Screen, ContactListener {
         if (body1.getUserData() == "Player" && body2.getUserData() == "Life") {
             // Player collided with life
             hud.incrementLives();
+            lifeSound.play();
             body2.setUserData("Remove");
             cloudsController.removeCollectables();
 
