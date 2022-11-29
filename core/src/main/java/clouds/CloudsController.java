@@ -26,8 +26,8 @@ public class CloudsController {
 
     public CloudsController(World world) {
         this.world = world;
-        minX = GameInfo.WIDTH / 2f - 110;
-        maxX = GameInfo.WIDTH / 2f + 110;
+        minX = GameInfo.WIDTH / 2f - 120;
+        maxX = GameInfo.WIDTH / 2f + 120;
         createClouds();
         positionClouds(true);
     }
@@ -75,6 +75,7 @@ public class CloudsController {
                 } else if (controlX == 1) {
                     tempX = randomBetweenNumbers(minX + 40, minX);
                     c.setDrawLeft(true);
+                    controlX=0;
                 }
                 c.setSpritePosition(tempX, positionY);
                 positionY -= DISTANCE_BETWEEN_CLOUDS;
@@ -96,7 +97,6 @@ public class CloudsController {
                                 collectable.setCollectablePosition(c.getX(), c.getY() + 20);
                                 collectables.add(collectable);
                             }
-
                         } else {
                             // Spawn a Coin
                             Collectable collectable = new Collectable(world, "Coin");

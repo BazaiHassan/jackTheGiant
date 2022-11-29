@@ -86,12 +86,6 @@ public class GamePlay implements Screen, ContactListener {
         );
         world.setContactListener(this);
 
-        Cloud c = new Cloud(world, "Cloud 1");
-        c.setSpritePosition(
-                GameInfo.WIDTH / 2f,
-                GameInfo.HEIGHT / 2f
-        );
-
         cloudsController = new CloudsController(world);
         player = cloudsController.positionThePlayer(player);
 
@@ -129,10 +123,25 @@ public class GamePlay implements Screen, ContactListener {
         }
     }
 
+    void handleInputAndroid(){
+        if (Gdx.input.isTouched()){
+            if (Gdx.input.getX() > (GameInfo.WIDTH/2f)){
+                // We touched right side of the screen
+                player.movePlayer(+2);
+            }else {
+                // We touched left side of the screen
+                player.movePlayer(-2);
+            }
+        }else {
+            player.setWalking(false);
+        }
+    }
+
     void update(float dt) {
         checkForFirstTouch();
         if (!GameManager.getInstance().isPaused) {
             handleInput(dt);
+            handleInputAndroid();
             moveCamera(dt);
             checkBackgroundsOutOfBounds();
             cloudsController.setCameraY(mainCamera.position.y);
@@ -293,7 +302,7 @@ public class GamePlay implements Screen, ContactListener {
         player.drawPlayerAnimation(game.getBatch());
         game.getBatch().end();
 
-        debugRenderer.render(world,box2DCamera.combined);
+        //debugRenderer.render(world,box2DCamera.combined);
 
         game.getBatch().setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.getStage().draw();

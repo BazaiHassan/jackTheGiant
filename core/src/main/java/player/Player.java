@@ -38,12 +38,12 @@ public class Player extends Sprite {
     void createBody() {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(getX() / GameInfo.PPM, getY() / GameInfo.PPM);
+        bodyDef.position.set((getX() + 10f) / GameInfo.PPM, getY() / GameInfo.PPM);
         body = world.createBody(bodyDef);
         body.setFixedRotation(true);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox((getWidth() / 2f - 16f) / GameInfo.PPM, (getHeight() / 2f) / GameInfo.PPM);
+        shape.setAsBox((getWidth() / 4f) / GameInfo.PPM, (getHeight() / 2f) / GameInfo.PPM);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
